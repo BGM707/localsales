@@ -55,11 +55,14 @@ export const useAuth = (db: any) => {
         )
       `);
 
-      // Verificar si existe admin
-      const adminCheck = db.exec(`SELECT COUNT(*) FROM users WHERE role = 'admin'`);
-      const adminCount = adminCheck[0]?.values[0][0] || 0;
+      // Verificar si existe un usuario admin con username "admin"
+      const adminCheck = db.exec(
+        `SELECT COUNT(*) FROM users WHERE username = 'admin'`
+      );
+      const adminExists = adminCheck[0]?.values[0][0] || 0;
 
-      if (adminCount === 0) {
+      if (adminExists === 0) {
+        // Crear admin por defecto solo si no existe
         db.exec(`
           INSERT INTO users (username, password, role, is_active) 
           VALUES ('admin', 'admin123', 'admin', TRUE)
